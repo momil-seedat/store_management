@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from mystoreapp.store_views import StoreCreateView
+from mystoreapp.store_views import StoreCreateListView
+from mystoreapp.store_views import StoreDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/store/', StoreCreateView.as_view(), name='store-create')
+    path('api/store/', StoreCreateListView.as_view(), name='store-create'),
+    path('api/store/<int:pk>/', StoreDetailView.as_view(), name='store-detail')
+
 ]
