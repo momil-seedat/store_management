@@ -18,10 +18,10 @@ from django.contrib import admin
 from django.urls import path
 from mystoreapp.store_views import StoreCreateListView
 from mystoreapp.store_views import StoreDetailView
-
+from mystoreapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/store/', StoreCreateListView.as_view(), name='store-create'),
-    path('api/store/<int:pk>/', StoreDetailView.as_view(), name='store-detail')
-
+    path('api/store/<int:pk>/', StoreDetailView.as_view(), name='store-detail'),
+    path('task_submission/<int:task_id>/', views.task_submission, name='task_submission')
 ]
