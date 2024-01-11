@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-c&!cvje*fp=$9#d6z@5t0y*=-by$c&q_ug&*y0+ac#wz93nycn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'storemanagement.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'store_management',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': 'imodb',
+        'USER': 'momil',
+        'PASSWORD': 'ronaldo',
         'HOST': 'localhost',  # Set to the hostname or IP address of your PostgreSQL server.
         'PORT': '5432',       # Default PostgreSQL port.
     }
