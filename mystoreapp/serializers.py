@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Store,Task,Notification,Project,StoreContact,TaskSubmission,SubmissionImages,AssignedPermission, City, District
+from .models import Store,Task,Notification,Project,StoreContact,TaskSubmission,SubmissionImages,AssignedPermission, City, District,UserAttribute
 from django.contrib.auth.models import User, Group
 
 class StoreContactSerializer(serializers.ModelSerializer):
@@ -65,10 +65,23 @@ class UserSerializer(serializers.ModelSerializer):
         if group:
             return GroupSerializer(group).data
         return None
-        
+
+class UserCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+class UserObjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username','id']    
+class StoreObjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ['shop_name','id']      
 class ProjectSerializer(serializers.ModelSerializer):
-    store = StoreSerializer()
-    created_by =  UserSerializer()
+    store = StoreObjectSerializer()
+    created_by =  UserObjectSerializer()
     class Meta:
         model = Project
         fields = ['title','description','store','created_by','project_serial_no','created_at','id']
@@ -87,6 +100,11 @@ class AddProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project   
         fields = '__all__'
+
+class ProjectObjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project   
+        fields = ['project_serial_no','id']
 
 class SubmissionImagesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -120,6 +138,13 @@ class AddTaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
 
+class TaskObjectSerializer(serializers.ModelSerializer):
+    project = ProjectObjectSerializer()
+    assignee = UserObjectSerializer()
+    task_assigned_to = UserObjectSerializer()
+    class Meta:
+        model = Task
+        fields = ['id', 'name', 'project', 'description', 'assignee','task_assigned_to', 'progress','task_serial_no', 'status', 'start_date', 'end_date']
 
 class AssignedPermissionSerializer(serializers.ModelSerializer):
     project = ProjectSerializer()
@@ -149,7 +174,23 @@ class TaskSubmissionSerializer(serializers.ModelSerializer):
         model = TaskSubmission
         fields = ['submission_date','user','submission_feedback','task_submissions','status','id']
 
-class UserCreationSerializer(serializers.ModelSerializer):
+
+class UserAttributeSerializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model = UserAttribute
+        fields = ['district', 'mobile_no','user_id'  # Add other fields as needed
+                  ]
+
+class FetchUserSerializer(serializers.ModelSerializer):
+    user_attribute = UserAttributeSerializer(source='userattribute', read_only=True)
+    groups = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'groups','user_attribute']
+    def get_groups(self, user):
+        group = user.groups.first()  # Fetch the first group associated with the user
+        if group:
+            return GroupSerializer(group).data
+        return None

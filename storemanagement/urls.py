@@ -20,7 +20,7 @@ from mystoreapp.store_views import StoreCreateListView,StoreWithContactsView
 from mystoreapp.store_views import StoreDetailView
 from mystoreapp.notification_views import NotificationListCreateView
 from mystoreapp.project_views import  ProjectListCreateView, ProjectDetailView,projects_by_created_by,projects_by_store
-from mystoreapp.user_views import  UsersByGroupView, AllUsersView, CreateUserWithAttributes, GroupViews
+from mystoreapp.user_views import  UsersByGroupView, AllUsersView, CreateUserWithAttributes, GroupViews,get_user_info_view
 from mystoreapp.task_views import  TaskCreateListView,TaskDetailView, fetch_tasks, update_task
 from mystoreapp.task_submission_views import create_task_submission, TaskSubmissionCreateListView,TaskSubmissionDetailView
 from mystoreapp.assigned_permission_views import AssignedPermissionListView,fetch_assigned_projects
@@ -52,6 +52,7 @@ urlpatterns = [
     path('users/group/<str:group_name>/', UsersByGroupView.as_view(), name='users-by-group'),
     path('users/', AllUsersView.as_view(), name='all-users'),
     path('api/user/', CreateUserWithAttributes.as_view()),
+     path('api/user/<int:user_id>/', get_user_info_view, name='get_user_info'),
      path('api/auth/group', GroupViews.as_view()),
     path('task-submission/create/', create_task_submission, name='task-submission-create'),
      path('submission/<int:submission_id>/', update_submission, name='update_submission'),

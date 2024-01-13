@@ -180,6 +180,7 @@ def update_submission(request, submission_id):
             text=notification_text,
             type="Task Update",
             user_id=task.task_assigned_to,
+            link="/task-submission/view-submission/"+taskSubmission.task_id
         )
 
         

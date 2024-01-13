@@ -10,8 +10,15 @@ from .signals import generate_project_serial_number
 
 
 class ProjectListCreateView(generics.ListCreateAPIView):
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().order_by('-created_at')
     serializer_class = AddProjectSerializer
+
+    def get_serializer_class(self):
+        # Use different serializer for list view
+        if self.request.method == 'GET':
+            return ProjectSerializer  # Change ListProjectSerializer to your actual serializer class
+        else:
+            return AddProjectSerializer
 
     def perform_create(self, serializer):
         # Generate a random serial number for the project

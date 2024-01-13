@@ -8,7 +8,7 @@ from .serializers import StoreSerializer,StoreContactSerializer
 
 
 class StoreCreateListView(generics.ListCreateAPIView):
-    queryset = Store.objects.prefetch_related('contacts').all() 
+    queryset = Store.objects.prefetch_related('contacts').all().order_by('-created_at') 
     serializer_class = StoreSerializer
 
     def create(self, request, *args, **kwargs):

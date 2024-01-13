@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from .models import Task
-from .serializers import TaskSerializer, AddTaskSerializer
+from .serializers import TaskSerializer, AddTaskSerializer,TaskObjectSerializer
 from .models import Project, Notification
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +9,7 @@ import json
 from .signals import generate_task_serial_number
 
 class TaskCreateListView(generics.ListCreateAPIView):
-    queryset = Task.objects.all()
+    queryset = Task.objects.all().order_by('-start_date')
     serializer_class = AddTaskSerializer
 
     def perform_create(self, serializer):
@@ -27,7 +27,18 @@ class TaskCreateListView(generics.ListCreateAPIView):
         if project_serial:
             task_serial = generate_task_serial_number(project_serial)
 
-        serializer.save(task_serial_no=task_serial)
+        task=serializer.save(task_serial_no=task_serial)
+        notification_text = f"A new task has been created: {task.name}"
+        notification_link = f"/task-mangement/task_profile/{task.id}"  # Change this to the appropriate link for your task details
+        Notification.objects.create(text=notification_text, link=notification_link, user_id=task.task_assigned_to,type="Task Added")
+
+
+    def get_serializer_class(self):
+        # Use different serializer for list view
+        if self.request.method == 'GET':
+            return TaskObjectSerializer  # Change ListProjectSerializer to your actual serializer class
+        else:
+            return AddTaskSerializer    
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
@@ -70,7 +81,7 @@ def fetch_tasks(request):
                 'status': task.status,
                 'task_serial': task.task_serial_no,
                 'project_serial_no': project_serial_no,
-                'assigned_to': assigned_by,
+                'assigned_to': task.task_assigned_to.username,
                 'assignee': task.assignee.username,
                 'created_at': task.start_date.strftime('%d-%m-%Y'),
             })
