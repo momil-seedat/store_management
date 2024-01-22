@@ -9,6 +9,8 @@ class Store(models.Model):
     address = models.TextField()
     owner_name = models.CharField(max_length=255)
     purchase_data = models.CharField(max_length=255,null=True)
+    grade = models.CharField(max_length=255,null=True)
+    channel = models.CharField(max_length=255,null=True)
     description = models.TextField()
     email = models.EmailField()
     installation_time = models.DateTimeField(default=timezone.now)

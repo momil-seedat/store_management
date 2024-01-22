@@ -12,7 +12,7 @@ class StoreSerializer(serializers.ModelSerializer):
     contacts = StoreContactSerializer(many=True,required=False) 
     class Meta:
         model = Store
-        fields = ['id', 'shop_name', 'sales', 'brands', 'address', 'owner_name', 'purchase_data', 'description', 'email', 'contacts']
+        fields = ['id', 'shop_name', 'sales', 'brands', 'address', 'owner_name', 'grade','channel','purchase_data', 'description', 'email', 'contacts']
 
     def create(self, validated_data):
         contacts_data = validated_data.pop('contacts', [])  # Extract contacts data
